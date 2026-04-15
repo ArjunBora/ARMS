@@ -74,7 +74,9 @@ export const TelemetryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             if (!token) return;
 
             setStatus('syncing');
-            const url = `wss://${host}/api/ws/plugins/telemetry?token=${token}`;
+            // Use WSS for thingsboard.cloud or if the page is loaded over HTTPS
+            const protocol = (host.includes('thingsboard.cloud') || (typeof window !== 'undefined' && window.location.protocol === 'https:')) ? 'wss' : 'ws';
+            const url = `${protocol}://${host}/api/ws/plugins/telemetry?token=${token}`;
 
             try {
                 const socket = new WebSocket(url);
