@@ -15,9 +15,9 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 # ── Model file paths ────────────────────────────────────────────────────────
-_BASE_DIR = Path(__file__).parent
-_MODEL_PATH = _BASE_DIR / "relay_rul_model.joblib"
-_SCALER_PATH = _BASE_DIR / "relay_rul_scaler.joblib"
+_BASE_DIR = Path(__file__).parent.parent
+_MODEL_PATH = _BASE_DIR / "models" / "relay_rul_model.joblib"
+_SCALER_PATH = _BASE_DIR / "models" / "relay_rul_scaler.joblib"
 
 # ── Alert thresholds ────────────────────────────────────────────────────────
 THRESHOLD_CRITICAL = 20.0   # RUL % → CRITICAL

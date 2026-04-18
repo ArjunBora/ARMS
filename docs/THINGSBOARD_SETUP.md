@@ -1,11 +1,11 @@
-# ⚙️ ThingsBoard Setup Guide
+# ThingsBoard Setup Guide
 ### A.R.M.S. Ecosystem Configuration
 
 Follow these steps to link your hardware data to the industrial dashboard and prepare it for the judges.
 
 ---
 
-## 🏗️ Step 1: Create the IoT Device
+## Step 1: Create the IoT Device
 1.  **Login**: Access [ThingsBoard Cloud](https://eu.thingsboard.cloud).
 2.  **Add Device**: Go to **Entities → Devices** and click the **(+)** button.
 3.  **Config**:
@@ -16,7 +16,7 @@ Follow these steps to link your hardware data to the industrial dashboard and pr
 
 ---
 
-## 🎨 Step 2: Build the Industrial Dashboard
+## Step 2: Build the Industrial Dashboard
 1.  **Add Dashboard**: Go to **Dashboards**, click **(+)**, and name it `ARMS Control Center`.
 2.  **Open & Edit**: Open the dashboard and click the **Pencil icon** (bottom right).
 3.  **Create Alias (The "Bridge")**:
@@ -31,7 +31,7 @@ Follow these steps to link your hardware data to the industrial dashboard and pr
 
 ---
 
-## 🌍 Step 3: Enabling Public Access (Professional Edition)
+## Step 3: Enabling Public Access (Professional Edition)
 Judges need to view your dashboard without logging in. Follow these steps for ThingsBoard Cloud/PE:
 
 ### Method A: Detailed Configuration
@@ -47,14 +47,14 @@ Judges need to view your dashboard without logging in. Follow these steps for Th
 
 ---
 
-## ⏱️ Step 4: Real-time Refresh
+## Step 4: Real-time Refresh
 To ensure the dashboard "lives," click the **Timer icon** at the top of your dashboard and set the "Default Real-time Strategy" to:
 *   **Type**: Real-time
 *   **Time Window**: Last 5 minutes
 
 ---
 
-## ✅ Final Verification
+## Final Verification
 1.  Start your local script: `python go.py`.
 2.  Open your **Public Dashboard Link** in a Private/Incognito browser window.
 3.  If you see the gauges moving, your system is **Enterprise-Ready**. 🚀
