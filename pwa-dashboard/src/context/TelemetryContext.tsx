@@ -243,7 +243,7 @@ export const TelemetryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 const inrushTarget = isStressMode ? (80.0 + Math.random() * 15.0) : (4.0 + Math.random() * 11.0);
                 let newInrush = (prev.inrush_ratio || 8.0) + (inrushTarget - (prev.inrush_ratio || 8.0)) * 0.4;
 
-                // 3. Compounding Physics RUL Formula
+                 // 3. Compounding Physics RUL Formula
                 // RUL = 100 - (cycles / 1000) * exp(current / 10) * 2^((T - 25) / 10)
                 const cycles = (prev.cycle_count || 5000) + (Math.random() > 0.8 ? 1 : 0);
                 const stressFactor = Math.pow(2, (newTemp - 25) / 10);
@@ -253,11 +253,22 @@ export const TelemetryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 const targetRUL = Math.max(100 - damage, 0);
                 
                 // Physics Rule: RUL must be monotonic (only decrease)
-                const newRUL = Math.min(prev.hybrid_rul_pct !== undefined ? prev.hybrid_rul_pct : 100, targetRUL);
+                const physicsRul = Math.min(prev.physics_rul_pct !== undefined ? prev.physics_rul_pct : 100, targetRUL);
+                
+                // ML RUL: Derived from physics with ±3% variance (offsetting)
+                const mlRulRaw = physicsRul + (Math.random() - 0.5) * 6;
+                const mlRul = Math.min(Math.max(mlRulRaw, 0), 100);
+
+                // Hybrid RUL Calculation (Weighted Blend)
+                // When physics_rul is high (100), weight_ml is 0. 
+                // When physics_rul is low (0), weight_ml is 1.
+                const w_ml = 1 - (physicsRul / 100);
+                const w_physics = 1 - w_ml;
+                const hybridRul = (w_physics * physicsRul) + (w_ml * mlRul);
 
                 // 4. Alert Logic Correlated to Physics state
                 // 65C is Hardware Trip Point; RUL < 5% is Critical Depletion
-                const alert = (newTemp >= 64.5 || newRUL < 5) ? 'CRITICAL' : newRUL < 45 ? 'WARNING' : 'NORMAL';
+                const alert = (newTemp >= 64.5 || physicsRul < 5) ? 'CRITICAL' : physicsRul < 45 ? 'WARNING' : 'NORMAL';
 
                 const update = {
                     ...prev,
@@ -265,8 +276,9 @@ export const TelemetryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                     inverter_current: newCurrent,
                     switching_frequency: newFreq,
                     inrush_ratio: newInrush,
-                    hybrid_rul_pct: newRUL,
-                    physics_rul_pct: Math.min(newRUL + 2.5, 100),
+                    hybrid_rul_pct: hybridRul,
+                    physics_rul_pct: physicsRul,
+                    ml_rul_pct: mlRul,
                     alert_level: alert,
                     cycle_count: cycles,
                     local_ts: Date.now()
@@ -322,7 +334,8 @@ export const TelemetryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
                 switching_frequency: 12.4,
                 inrush_ratio: 8.2,
                 hybrid_rul_pct: 73.2,
-                physics_rul_pct: 75.7,
+                physics_rul_pct: 75.0,
+                ml_rul_pct: 72.8,
                 inverter_status: 1,
                 local_ts: Date.now()
             });
